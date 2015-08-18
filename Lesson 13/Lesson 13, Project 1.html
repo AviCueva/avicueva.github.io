@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!-- saved from url=(0087)https://students.oreillyschool.com/student/viewassignment.php?entryid=7927&type=project -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Lesson 13, Project</title>
+<link href="./Lesson 13, Project 1_files/base.css" rel="stylesheet" type="text/css">
+<script>
+function submit_comments(comments) {
+	 document.getElementById("COMMENTS").value = comments;
+	  document.getElementById("myform").submit();
+}
+</script>
+</head>
+<body>
+<form action="https://students.oreillyschool.com/student/submit_comments.php" method="post" name="myform" id="myform">
+<input type="hidden" name="ENTRYID" value="7927">
+<input type="hidden" name="COMMENTS" id="COMMENTS">
+
+</form>
+<form action="https://students.oreillyschool.com/student/submit_item.php" method="post">
+<input type="hidden" name="entryid" value="7927">
+
+<div style="width: 95%; margin: 15px; font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 11px;">
+
+<h1 style="text-align: center; font-size: 16px;">
+Python 2: Getting More Out of Python<br>
+Lesson 13, Project 1</h1><div style="color: #8B0000; font-weight: 700;">Here are your instructions:</div>
+            <div><p>Write a program that imports the following names from a "settings" module:</p>
+    
+<pre>RECIPIENTS&nbsp;&nbsp; a list of (name, email-address) tuples
+STARTTIME&nbsp;&nbsp;&nbsp; datetime.datetime object for first message
+DAYCOUNT&nbsp;&nbsp;&nbsp; number of daily message generations
+</pre>
+
+<p>The program should produce a message of the format:</p>
+    
+<pre>Date: {{date}}
+From: &lt;a href="mailto:website@example.com"&gt;website@example.com&lt;/a&gt;
+To: {{recipient}}
+Message-Id: &lt;NNNNNN&gt;
+
+This is a test message.
+</pre>
+    
+<p>Your program should save these messages in the messages table.</p>
+    
+<p>Use test-driven development, and state the purpose of each test in the 
+suite in docstrings that will eventually document your program.</p>
+
+<p>Time your program for DAYCOUNTS of 1, 10, 50, 100, and 500 and plot the 
+results (on a sheet of paper). How reliable are the timings?</p>
+
+<p>Think of it like this: You are soon to go on vacation, at STARTTIME, for DAYCOUNT days,
+and you want your co-workers (RECIPIENTS) to continue getting
+your famous Joke of the Day (JOTD).</p>
+
+<p>Your strategy is to store up the emails ahead of time, predated
+with the date they're to be sent. So if you leave on vacation
+on Jan 3, 2013, the first set of emails might be dated
+Jan 4 (each recipient gets one), then Jan 5 and so on, for
+DAYCOUNT days.</p>
+
+<p>A good test that you have the right number is DAYCOUNT * len(RECIPIENTS)
+should equal SELECT COUNT(*) FROM jotd_emails; that is, the total
+number of days you're on vacation times the number of receivers,
+should equal the total number of records in the table generated.
+Of course, this will only be true if your To: line is only to a
+single recipient, and not all of them separated by commas.</p>
+
+<p>Storing the right date for each email will likely involve using
+a timedelta to increment a datetime by one day at a time for
+DAYCOUNT days.</p>
+
+<p>Regarding timing, it's enough to count under your breath and give
+a sense in your remarks about how you think time might be a function
+of DAYCOUNT. If you have your email generating and storing function
+where you might conveniently go:</p>
+
+<pre>    start = time.time()
+    call_function(args)
+    end = time.time()
+    interval = end - start
+    print("Time to complete: ", end)
+</pre>
+
+<p>Then you could also give some hard numbers as to the relative
+times the program took as a function of changing DAYCOUNT. The
+purpose of this requirement is to look ahead to future projects
+where timing / profiling is a core focus.</p></div>
+
+	
+			<div id="time_survey_form">
+			    <p><strong>How long did it take you to complete this ?</strong> <a href="http://www.oreillyschool.com/about-us/faq/#whyAskHours" target="_blank" style="margin-left:10px; font-size:80%; font-weight:normal;">What's this?</a><br>
+			    (This estimate helps us verify time projections for courses, anonymously. It is not part of your evaluation.) 
+			    </p>
+			
+			    <label style="font-weight:normal; margin-right:10px;">Hours
+			    	<input type="text" size="2" id="hours" name="hours" value="0" style="text-align:right;">
+				</label>
+				
+			    <label style="font-weight:normal; margin-right:30px;">Minutes
+			    	<input type="text" size="2" id="minutes" name="minutes" value="0" style="text-align:right;">
+			    </label>
+			    
+		
+				<!-- For validation -->
+				<div id="no_entry_error" class="ost_hidden error">
+					<p>Please enter the amount of time you spent working on this.</p>
+				</div>
+			
+				<div id="invalid_entry_error" class="ost_hidden error">
+					<p>Please enter only non-negative integers for hours and minutes.</p>
+				</div>
+			    
+				<div id="db_error" class="ost_hidden error">
+					<p>Sorry, there was a database error. Please try again.</p>
+				</div>
+			    
+							</div>
+				
+				
+	<script src="./Lesson 13, Project 1_files/jquery.js"></script>
+	
+	<script>
+	jQuery(document).ready(function ($) {
+
+	    	    
+	    	    
+	    	    
+		function validate_form () { // Validates time survey form
+	        var hours = $.trim( $('#hours').val() ); // Get time survey values for validation
+	        var minutes = $.trim( $('#minutes').val() );
+	        
+	        hours = (hours == '') ? 0 : hours; // So we don't have to test for empty strings later
+	        minutes = (minutes == '') ? 0 : minutes;
+	        
+	        try {
+	            hours = parseInt(hours); // throws error if non-numeric string
+	            minutes = parseInt(minutes);
+	            
+	            hours_valid = ( typeof(hours) === 'number' && (hours % 1 === 0) && hours >= 0 ); // Is a non-negative integer
+	            minutes_valid = ( typeof(minutes) === 'number' && (minutes % 1 === 0) && minutes >= 0 );
+	                
+	            // Validate time survey
+	            // Making survey optional now - zeros in both fields permissible - sean 11/5/13
+//	            if ( hours == 0 && minutes == 0 ) { // Both fields are empty or zero (fails if use strict equals here - who knows why?)
+//	                $('#no_entry_error').removeClass('ost_hidden');
+//	                return false;
+//	            } else 
+
+		       if ( ! hours_valid || ! minutes_valid ) { // At least one isn't a non-negative integer
+	                $('#invalid_entry_error').removeClass('ost_hidden');
+	                return false;
+	            }
+	        } catch (e) {
+	            $('#invalid_entry_error').removeClass('ost_hidden');
+	            return false;
+	        }
+	
+	        return true;
+	    }
+	});
+	</script>
+
+
+<div style="text-align: center; margin: 25px;">
+
+</div>
+<div style="color: #B0B0B0; font-size: 11px;"> © 2014, O'Reilly Media, Inc. All rights reserved. </div>
+
+</div>
+</form>
+<iframe id="t" width="1" height="1" border="0" style="display:none" src="about:blank"></iframe>
+<script language="javascript">
+function t(f)
+{
+	var f = document.getElementById("t");
+	var U = escape(window.location.href);
+	f.src = "https://students.oreillyschool.com/ws/t/?U=" + U + (f.length > 0 ? "&F=1" : "");
+	setTimeout(t, 60000);
+}
+t();
+
+</script>
+
+
+
+
+</body></html>

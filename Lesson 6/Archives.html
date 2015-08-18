@@ -1,0 +1,349 @@
+
+<!-- saved from url=(0054)http://courses.oreillyschool.com/Python2/Archives.html -->
+<html><!-- Copyright (c) 1998-2014 O'Reilly Media, Inc.
+			This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
+			See http://creativecommons.org/licenses/by-sa/3.0/legalcode for more information.
+            --><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="./Archives_files/Lab.css"><script async="" src="./Archives_files/analytics.js"></script><script type="text/javascript" src="./Archives_files/Lab.js"></script><script language="javascript"></script><title>Archives</title></head><body id="body" style="font-size: 12px;"><a name="top"></a><div class="title">Archives</div><div class="resize"><a href="http://courses.oreillyschool.com/Python2/Archives.html#top" onclick="changeSize(&#39;smaller&#39;);" class="aS" title="Keep clicking to make fonts smaller">A</a><a href="http://courses.oreillyschool.com/Python2/Archives.html#top" onclick="changeSize(&#39;larger&#39;);" class="aL" title="Keep clikcing to make fonts larger">A</a><a href="http://courses.oreillyschool.com/Python2/Archives.html#top" onclick="lv()" class="lv" title="Adjust Page for High Contrast">HC</a><div id="fh"><p>Click on <span class="aS">A</span> to make all fonts on the page smaller.</p><p>Click on <span class="aL">A</span> to make all fonts on the page larger.</p><p>Click on <span class="lv">HC</span> to toggle high contrast mode. When you move your mouse over 
+                 some bold words in high contrast mode, related words are automatically highlighted. Text is shown
+                 in black and white. 
+             </p></div></div><hr>
+    
+    <div class="goalTitle">Lesson Objectives</div><div class="goals">When you complete this lesson, you will be able to:
+        
+        <ul><li>read and write archive files.</li><li>use the tarfile module.</li><li>use the zipfile module.</li><li>read zip files.</li><li>read tar files.</li></ul></div><hr>
+
+ <a name="h_01"></a><div class="heading">Reading and Writing Archives Using tarfile and zipfile</div><div class="headingText">
+
+     <p>Python has two modules for handling <i>archive files</i>. An archive file is a file that contains an 
+          entire directory tree, as well as information about the directory tree itself. An archive file 
+          is not a directory; it is a single file which may encapsulate an entire directory tree though, which 
+          makes it useful for shipping filestore content from one place to another.</p>
+     <p> Python supports 
+          two archive file formats: zip and tar. Zip files can store compressed versions of files in a 
+          directory tree. Tar files are an archival format; they can be compressed using gzip or 
+          bzip2. Python can read both regular and compressed tar files (.tar.gz, .tgz, .tar.bz2, 
+          or .tbz). </p>  
+        
+     <p>The <b>zipfile</b> and <b>tarfile</b> modules are used for reading and writing zip and tar files, 
+         respectively. Let's take a quick look at these modules; fire up an interactive console. You'll use 
+         some of what you learned earlier to prepare a directory to archive. Let's start with 
+         <span class="purple">tarfile</span>. Create the <b>Archives</b> project, assign it to the 
+         <b>Python2_Lessons</b> working set, start an interactive console session, and enter the commands as shown:</p>
+     
+<div class="interactiveBox"><div class="interactiveTitle">INTERACTIVE SESSION:</div><div class="interactive"><pre>&gt;&gt;&gt; <ins>import os</ins>
+&gt;&gt;&gt; <ins>import tarfile</ins>
+&gt;&gt;&gt; <ins>import glob</ins>
+&gt;&gt;&gt; <ins>import shutil</ins>
+&gt;&gt;&gt; <ins>filenames = ["larry", "curly", "moe"]</ins>
+&gt;&gt;&gt; <ins>path = r"v:\workspace\Archives\src\archive_me"</ins>
+&gt;&gt;&gt; <ins>os.mkdir(path)</ins>
+&gt;&gt;&gt; <ins>for fn in filenames:</ins>
+...     <ins>f = open(os.path.join(path, fn), "w")</ins>
+...     <ins>f.close()</ins>
+...
+&gt;&gt;&gt; <ins>glob.glob(os.path.join(path, "*"))</ins>
+['v:\\workspace\\Archives\\src\\archive_me\\larry', 'v:\\workspace\\Archives\\src\\archive_me\\curly', 'v:\\workspace\\Archives\\src\\archive_me\\moe']
+&gt;&gt;&gt; <ins>archive_fn = r"v:\workspace\Archives\src\archive_me\my_archive.tar"</ins>
+&gt;&gt;&gt; <ins>tf = tarfile.open(archive_fn, "w")</ins>
+&gt;&gt;&gt; <ins>tf.add(path)</ins>
+&gt;&gt;&gt; <ins>tf.close()</ins>
+&gt;&gt;&gt; <ins>tf = tarfile.open(archive_fn)</ins>
+&gt;&gt;&gt; <ins>tf.list()</ins>
+-rwxrwxrwx root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/ 
+-rw-rw-rw- root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/larry 
+-rw-rw-rw- root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/curly 
+-rw-rw-rw- root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/moe 
+&gt;&gt;&gt; <ins>tf.close()</ins>
+&gt;&gt;&gt; <ins>archive_fn_compressed = archive_fn + ".gz"</ins>
+&gt;&gt;&gt; <ins>tf = tarfile.open(archive_fn_compressed, "w:gz")</ins>
+&gt;&gt;&gt; <ins>tf.add(path)</ins>
+&gt;&gt;&gt; <ins>tf.close()</ins>
+&gt;&gt;&gt; <ins>tf = tarfile.open(archive_fn_compressed)</ins>
+&gt;&gt;&gt; <ins>tf.list()</ins>
+-rwxrwxrwx root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/ 
+-rw-rw-rw- root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/larry 
+-rw-rw-rw- root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/curly 
+-rw-rw-rw- root/root          0 2010-05-28 19:03:27 workspace/Archives/src/archive_me/moe 
+-rw-rw-rw- root/root      10240 2011-05-17 13:50:12 workspace/Archives/src/archive_me/my_archive.tar 
+&gt;&gt;&gt; <ins>tf.close()</ins>
+&gt;&gt;&gt; <ins>os.path.getsize(archive_fn)</ins>
+10240
+&gt;&gt;&gt; <ins>os.path.getsize(archive_fn_compressed)</ins>
+209
+&gt;&gt;&gt;
+</pre></div></div>
+     
+     <p><table class="noteBox fBox pBox "><tbody><tr><td class="noteTitle">WARNING</td><td class="note">In these examples, we use "*" to add all files in a folder to an archive. If the archive is in the same folder, 
+         this can cause a serious problem when you do it again, and repeatedly, because the archive itself will be added to the 
+         archive, and you can therefore find youself in an infinite loop creating an infinitely large archive! While it works in 
+         our limited examples, you should avoid this practice when you do real work with archives.</td></tr></tbody></table></p>
+     
+     <p>Before cleanup, look for these files in the Package Explorer. You may need to refresh the folder view in Package Explorer 
+         (right-click the folder name and select <b>Refresh</b>).</p>
+     
+     <p>Then, enter this command in the interactive Python console, as shown:</p>
+     
+<div class="interactiveBox"><div class="interactiveTitle">INTERACTIVE SESSION:</div><div class="interactive"><pre>&gt;&gt;&gt;<ins>shutil.rmtree(path)</ins>
+&gt;&gt;&gt;
+</pre></div></div>
+
+     <p>Just like the built-in <span class="darkgreen">open()</span> function, tarfile's <span class="darkgreen">open()</span> 
+         function accepts a file name and a mode. But tarfile's modes are a bit more complicated. In 
+         addition to <b>r</b>, <b>w</b>, and <b>a</b> for mode (read, write, and append), you must also consider access type 
+         and compression: </p>
+        
+    <div class="c"> <table class="tbl"><tbody><tr><th>Access Type</th><th>Symbol</th><th>Description</th></tr><tr><td>Block Mode</td><td>: (colon)</td><td>Opens an actual file on disk</td></tr><tr><td>Stream Mode</td><td>| (pipe)</td><td>Opens a stream, socket, or pipe</td></tr></tbody></table></div>
+    <div class="c"> <table class="tbl"><tbody><tr><th>Compression</th><th>Symbol</th></tr><tr><td>GZip</td><td>gz</td></tr><tr><td>BZip2</td><td>bz2</td></tr></tbody></table></div>
+     
+     <p><b>Block mode</b> and <b>no compression</b> are the defaults. In our example, you used both <b>w</b> and 
+         <b>w:gz</b> to write out your tar files. The second version specifies that your tar file is 
+         compressed. At the end of your listing, where you compared the file sizes of the 
+         compressed and uncompressed archive file, the compressed version is significantly smaller.</p>
+        
+     <p>Once you've opened your tar file for writing, you can use its <span class="darkgreen">add()</span> method to 
+         add files to the archive. <span class="darkgreen">add()</span> can take both filenames and directories, and 
+         by default, it adds directories <i>recursively</i>—if you have subdirectories in the path that
+         you pass into <span class="darkgreen">add()</span>, those subdirectories are also added to the archive. You 
+         can read tar files by using <span class="darkgreen">open()</span> in read (<b>r</b>) mode. This is the default 
+         mode, so in the interactive shell session, we omitted the mode argument. Once you've opened a tar 
+         file, you can list its contents with the file's <span class="darkgreen">list()</span> method. You can also 
+         extract its contents using its <span class="darkgreen">extract()</span> or <span class="darkgreen">extractall()</span> 
+         method.</p>
+        
+     <p>Also, we used a function called <span class="darkgreen">rmtree()</span> from the 
+         <b>shutil</b> module, to remove the directory.</p>
+        
+     <p>Now we'll take a look at the <span class="purple">zipfile</span> module. Again, we'll use the file's name and 
+         the mode in which we open it to create an interface with zip files. But, instead of a function, 
+         the zipfile module offers a <span class="darkred">ZipFile</span> class constructor. 
+         In an interactive shell session for zipfile, type the commands below as shown:</p>
+
+<div class="interactiveBox"><div class="interactiveTitle">INTERACTIVE SESSION:</div><div class="interactive"><pre>&gt;&gt;&gt; <ins>import os, tarfile, glob, shutil, zipfile</ins>
+&gt;&gt;&gt; <ins>filenames = ["groucho", "harpo", "chico"]</ins>
+&gt;&gt;&gt; <ins>path = r"v:\workspace\Archives\src\archive_me"</ins>
+&gt;&gt;&gt; <ins>os.mkdir(path)</ins>
+&gt;&gt;&gt; <ins>for fn in filenames:</ins>
+...     <ins>f = open(os.path.join(path, fn), "w")</ins>
+...     <ins>f.close()</ins>
+...
+&gt;&gt;&gt; <ins>glob.glob(os.path.join(path, "*"))</ins>
+['v:\\workspace\\Archives\\src\\archive_me\\groucho', 'v:\\workspace\\Archives\\src\\archive_me\\harpo', 'v:\\workspace\\Archives\\src\\archive_me\\chico']
+&gt;&gt;&gt; <ins>archive_fn = r"v:\workspace\Archives\src\archive_me\my_archive.zip"</ins>
+&gt;&gt;&gt; <ins>zf = zipfile.ZipFile(archive_fn, "w")</ins>
+&gt;&gt;&gt; <ins>filenames = glob.glob(os.path.join(path, "*"))</ins>
+&gt;&gt;&gt; <ins>for fn in filenames:</ins>
+...     <ins>zf.write(fn)</ins>
+...
+&gt;&gt;&gt; <ins>zf.close()</ins>
+&gt;&gt;&gt; <ins>zf = zipfile.ZipFile(archive_fn)</ins>
+&gt;&gt;&gt; <ins>zf.namelist()</ins>
+['workspace/Archives/src/archive_me/groucho', 'workspace/Archives/src/archive_me/harpo', 'workspace/Archives/src/archive_me/chico', 'workspace/Archives/src/archive_me/my_archive.zip']
+&gt;&gt;&gt; <ins>#clean up. (Again, you can check the Package Explorer first to see that the files were created.)</ins>
+...
+&gt;&gt;&gt; <ins>zf.close()</ins>
+&gt;&gt;&gt; <ins>shutil.rmtree(path)</ins>
+</pre></div></div>
+        
+     <p></p><div class="c"><table class="noteBox fBox pBox "><tbody><tr><td class="noteTitle">Note</td><td class="note">This time, for the sake of convenience, we added all of our imports in one line!</td></tr></tbody></table></div><p></p>
+     
+     <p>One major difference between <b>tarfile</b> and <b>zipfile</b> is the method used to open the 
+         files—with zipfile, we use the class constructor instead of an <span class="darkgreen">open()</span> 
+         method on an instance. As mentioned above, zip archives may contain compressed files. By default, files are stored 
+         uncompressed. To compress files, we'd pass a third argument to the class 
+         constructor—<b>zipfile.ZIP_DEFLATED</b>.</p>
+     
+     <p>Unlike tarfile's <span class="darkgreen">add()</span> method, ZipFile's <span class="darkgreen">write()</span> method 
+         does not add files to the archive recursively. That's why we had to use <span class="darkgreen">glob()</span> 
+         to get all of the files before writing them to our archive. (We'd have had to use 
+         <span class="darkgreen">os.path.walk</span> or some similar functionality if there had been subdirectories to 
+         process).</p>
+        
+     <p>You can read in a zip file by passing only the filename to the ZipFile constructor. The 
+         <span class="darkgreen">namelist()</span> method lists all of the files in the archive and, just as in 
+         tarfile, the <span class="darkgreen">extract()</span> method will uncompress and extract the files from the 
+         archive. Here's a quick comparison of zipfile and tarfile:</p> 
+        
+        <div class="c"> <table class="tbl"><tbody><tr><th>Function</th><th>tarfile</th><th>zipfile</th></tr><tr><td>Open for Writing</td><td>tarfile.open(fn, "w")</td><td>zipfile.ZipFile(fn, "w")</td></tr><tr><td>Open for Writing Compressed</td><td>tarfile.open(fn, "w:gz")</td><td>zipfile.ZipFile(fn, "w", zipfile.ZIP_DEFLATED)</td></tr><tr><td>Open for Reading</td><td>tarfile.open(fn)</td><td>zipfile.ZipFile(fn)</td></tr><tr><td>Add a File to the Archive</td><td>tarfile.add(path)</td><td>zipfile.ZipFile.write(path)</td></tr><tr><td>List Files in an Archive</td><td>tarfile.list()</td><td>zipfile.ZipFile.namelist()</td></tr><tr><td>Extract Files</td><td>tarfile.extract()<br>
+                 or<br>
+                 tarfile.extractall()</td><td>zipfile.ZipFile.extract()<br> 
+                 or <br>
+                 zipfile.ZipFile.extractall()</td></tr></tbody></table></div>
+ </div>
+ <a name="h_02"></a><div class="heading">Creating a Recent File Archiver</div><div class="headingText">
+        
+     <p>You can build on <b>latest.py</b> to create a function that archives the last modified files in a path. 
+         Rather than try to extend the existing <b>test_latest</b> module, we'll create another module 
+         to test the added functionality. For this test, create a new file named <b>test_ziplatest.py</b> in 
+         your <b>Archives</b> project. The two test 
+         modules do have some common features, but for now, we'll write a separate test suite. 
+         Enter the code for <b>test_ziplatest.py</b> below as shown:</p>
+     
+<div class="listingBox"><div class="listingTitle">CODE TO TYPE:</div><div class="listing"><pre><ins>import unittest
+import latest
+import time
+import os
+import shutil
+import zipfile
+
+class TestZip(unittest.TestCase):
+                
+    def setUp(self):
+        self.path = r"v:\workspace\Archives\src\zip_test"
+        self.zip_filename = os.path.join(self.path, "test_zip_latest.zip")
+        os.mkdir(self.path)
+        self.file_names = ["old", "newer", "newest"]
+        for fn in self.file_names:
+            f = open(os.path.join(self.path, fn), "w")
+            f.close()
+            time.sleep(1)
+
+    def test_zip_latest(self):
+        latest.zip_latest(self.zip_filename, 2, self.path)
+        zf = zipfile.ZipFile(self.zip_filename, "w")
+        files_in_archive = zf.namelist()
+        zf.close()
+        observed = set([os.path.basename(f) for f in files_in_archive])
+        expected = set(self.file_names[1:3])
+        self.assertEqual(observed, expected)
+
+    def tearDown(self):
+        os.remove(self.zip_filename)
+        try:
+            shutil.rmtree(self.path, ignore_errors=True)
+        except IOError:
+            pass
+
+if __name__ == "__main__":
+    unittest.main()</ins>
+</pre></div></div>
+        
+     <p>Now, let's make a copy of <b>latest.py</b> and stub out a function. To copy the file, go to your 
+         <b>FileHandling/src</b> project folder, right-click on <b>latest.py</b>, and select <b>Copy</b>. 
+         Then, right-click the <b>Archives/src</b> folder and select <b>Paste</b>. We'll call the new 
+         function <span class="darkgreen">zip_latest()</span>. Modify the file as shown:</p>
+     
+<div class="listingBox"><div class="listingTitle">CODE TO TYPE:</div><div class="listing"><pre>import glob
+import os
+
+def latest(num=1, path="."):
+    files = glob.glob(os.path.join(path, "*"))
+    dated_files = [(os.path.getmtime(fn), os.path.abspath(fn)) for fn in files]
+    dated_files.sort()
+    latest_files = [f for (d, f) in dated_files[-num:]]
+    latest_files.reverse()
+    return latest_files
+
+<ins>def zip_latest(fn, num, path):
+    pass</ins>
+</pre></div></div>
+        
+     <p><img src="./Archives_files/icon_run.png"> A quick run will reveal a single failing test:</p>
+     
+<div class="observeBox"><div class="observeTitle">OBSERVE: Output from test_ziplatest.py</div><div class="observe"><pre>F
+======================================================================
+FAIL: test_zip_latest (__main__.TestZip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "V:\workspace\Archives\src\test_ziplatest.py", line 27, in test_zip_latest
+    self.assertEqual(observed, expected)
+AssertionError: Items in the second set but not the first:
+'newest'
+'newer'
+
+----------------------------------------------------------------------
+Ran 1 test in 3.032s
+
+FAILED (failures=1)
+</pre></div></div>
+
+     <p>Now that the test program has created the zip file, we can change it from write mode to read mode. Edit 
+         <b>test_ziplatest.py</b> as shown:</p>
+          
+<div class="listingBox"><div class="listingTitle">CODE TO TYPE:</div><div class="listing"><pre>import unittest
+import latest
+import time
+import os
+import shutil
+import zipfile
+
+class TestZip(unittest.TestCase):
+                
+    def setUp(self):
+        self.path = r"v:\workspace\Archives\src\zip_test"
+        self.zip_filename = os.path.join(self.path, "test_zip_latest.zip")
+        os.mkdir(self.path)
+        self.file_names = ["old", "newer", "newest"]
+        for fn in self.file_names:
+            f = open(os.path.join(self.path, fn), "w")
+            f.close()
+            time.sleep(1)
+
+    def test_zip_latest(self):
+        latest.zip_latest(self.zip_filename, 2, self.path)
+        zf = zipfile.ZipFile(self.zip_filename, "<ins>r</ins>")
+        files_in_archive = zf.namelist()
+        zf.close()
+        observed = set([os.path.basename(f) for f in files_in_archive])
+        expected = set(self.file_names[1:3])
+        self.assertEqual(observed, expected)
+
+    def tearDown(self):
+        os.remove(self.zip_filename)
+        try:
+            shutil.rmtree(self.path, ignore_errors=True)
+        except IOError:
+            pass
+
+if __name__ == "__main__":
+    unittest.main()
+</pre></div></div>
+        
+     <p>Most of the functionality you need is already within your module. Combine what 
+         you've learned about archive files with your <span class="darkgreen">latest()</span>, and add a few lines to
+         <b>latest.py</b>, as shown:</p>
+     
+<div class="listingBox"><div class="listingTitle">CODE TO TYPE:</div><div class="listing"><pre>import glob
+import os
+<ins>import zipfile</ins>
+
+def latest(num=1, path="."):
+    files = glob.glob(os.path.join(path, "*"))
+    dated_files = [(os.path.getmtime(fn), os.path.abspath(fn)) for fn in files]
+    dated_files.sort()
+    latest_files = [f for (d, f) in dated_files[-num:]]
+    latest_files.reverse()
+    return latest_files
+
+def zip_latest(fn, num, path):<del>
+    pass</del><ins>
+    files_to_archive = latest(num, path)
+    zf = zipfile.ZipFile(fn, "w", zipfile.ZIP_DEFLATED)
+    for fn_to_archive in files_to_archive:
+        zf.write(fn_to_archive)
+    zf.close()</ins>
+</pre></div></div>
+
+     <p>If the tests pass, your changes to the <b>latest</b> module have worked. Congratulations! </p>
+ 
+ </div>
+ <a name="h_03"></a><div class="heading">Save It in the Archives</div><div class="headingText">
+        
+     <p>Now you've got a good foundation for two archive file formats: zip and tar. We used Python's <b>zipfile</b> and 
+         <b>tarfile</b> modules to read and write each format. Finally, we integrated this knowledge to write 
+         a quick function that archived the latest <b>n</b> files in a path.</p>
+     <p>Great work so far! Keep it up!</p>
+    
+ </div>
+<div class="footer"><div id="timeSurvey"><iframe frameborder="0" width="400" height="150" src="./Archives_files/time_survey.html"></iframe></div>				
+				Copyright © 1998-2014 O'Reilly Media, Inc.<br><img src="./Archives_files/cclicense.png"><br>
+				This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.<br>
+				See <a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode">http://creativecommons.org/licenses/by-sa/3.0/legalcode</a> 
+				for more information.
+				</div><iframe id="t" width="1" height="1" border="0" style="display:none" src="about:blank"></iframe><script language="javascript">bodyLoaded();</script><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-44720547-1', 'oreillyschool.com');
+  ga('send', 'pageview');
+</script></body></html>
